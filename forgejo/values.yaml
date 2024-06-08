@@ -1,3 +1,15 @@
 gitea:
   config:
     APP_NAME: "Hack's Computer Kitchen"
+
+ingress:
+  enabled: true
+  className:
+  annotations:
+    {}
+  hosts:
+    - host: git.hackos.dev
+      paths:
+        - path: /
+          pathType: Prefix
+  tls: []
