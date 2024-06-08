@@ -13,3 +13,12 @@ ingress:
         - path: /
           pathType: Prefix
   tls: []
+
+postgresql:
+  enabled: true
+
+postgresql-ha:
+  enabled: false
+
+redis-cluster:
+  enabled: false
