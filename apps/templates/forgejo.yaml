@@ -23,3 +23,8 @@ spec:
   - repoURL: 'https://github.com/HackedOS/kube'
     targetRevision: main
     ref: values
+  - repoURL: 'https://github.com/HackedOS/kube'
+    path: forgejo
+    targetRevision: main
+    directory:
+      exclude: "values.yaml"
