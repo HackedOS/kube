@@ -16,7 +16,7 @@ spec:
   sources:
   - repoURL: code.forgejo.org/forgejo-helm
     chart: forgejo
-    targetRevision: 7.0.0
+    targetRevision: 7.0.1
     helm:
       valueFiles:
       - $values/forgejo/values.yaml
