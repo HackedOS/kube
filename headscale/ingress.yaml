@@ -1,0 +1,23 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+      cert-manager.io/cluster-issuer: letsencrypt
+  name: headscale-ingress
+  namespace: headscale
+spec:
+  rules:
+    - host: hail.hackos.dev
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: headscale
+                port:
+                  number: 8080
+  tls:
+    - hosts:
+        - hail.hackos.dev
+      secretName: headscale-tls

@@ -1,0 +1,42 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: headscale-config
+  namespace: headscale
+data:
+  config.yaml: |
+    server_url: https://hail.hackos.dev
+    listen_addr: 0.0.0.0:8080
+    noise:
+      private_key_path: /var/lib/headscale/noise_private.key
+    prefixes:
+      v6: fd7a:115c:a1e0::/48
+      v4: 100.64.0.0/10
+      allocation: sequential
+    database:
+      type: sqlite
+      sqlite:
+        path: /var/lib/headscale/db.sqlite
+    acl_policy_path: "/etc/headscale/acl.json"
+    dns_config:
+      override_local_dns: true
+      nameservers:
+        - 1.1.1.1
+      magic_dns: true
+      base_domain: hackos.tail
+    derp:
+      urls:
+        - https://controlplane.tailscale.com/derpmap/default
+
+  acl.json: |
+    {
+      "acls": [
+        { "action": "accept", "src": ["*"], "dst": ["*:*"] },
+      ],
+      "autoApprovers": {
+        "routes": {
+            "10.42.0.0/16": ["k3s"],
+            "2001:cafe:42::/56": ["k3s"],
+        },
+      }
+    }
