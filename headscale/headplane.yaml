@@ -1,0 +1,60 @@
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
+  name: headplane-secret
+  namespace: headscale
+spec:
+  encryptedData:
+    COOKIE_SECRET: AgANNSimrMc6ULYNkgHYWnLsTlkid9O81bToGFmez8gyLPwurMSdPrls6PP6yLSc4QnfFQiNd/Evp5zD5Y2opkulul4SSU43/FHwvCVLCfEgf3YdyqE4bsrT1Nng5fWyxnviv3x6ZpxpBvN0X3vwwWO+N8sibr3NUaAZ7MsJXrF5o+QCW8k/+Huadrlg0g0qE4wgT1iBj2BMwOO4hrr3JI3oB0/egK001tnih7VXmQk0Ymj4fd6Mvb3FUMBL/KB5uQ2NCxk+idQHFkRfBn6Wu29u+jvRa0jLFtPiOlo0K6YvOV6r85WGq+jIJkxgjoGM0tUGn+vjM/G+l6WO1IEOg9z2u5NfBq8+/U9hjOEh4HbB35qVwvOvwZ9KApNIhigtnQsyaZy+h+Wgawh4LU1JsWkIC0iTbb9aLkde1Zowe1FdW/gVe0aJmOmbuhHqxpqu+yMIMXbTzbCxQPD/U+C8ZElmE8GVr3aMRiZAvPWyGn8nDT7FqfG6MD+0mpeQ+ZHw0cCUnDQsxC6vH615YYtjGd0XFbZ3hdG12Un1BehRX0jxUKzK2YqBVzKY1WI1IYNORM6vNOjGRtp8BRry1eXHRYvmMT1M/6fGNKM0h1R8KQrBDcelbM+5Wv/zBEa55+Lvy3ZesurDoOtq8jyMsT5IVymSYzIL3IAdFhLtKifjF3E6+cimZm2w8cy+FRaEB+PixbcA/ueZW2auTLxtbZluMZi5EtrXs9SEp+uOTw==
+    ROOT_API_KEY: AgArwhOp7nFJXZr6lVjwZKyEreosZ1Qs9qyZmpBeAqsxkfLK95xLU7DQ+sfp+pB5vK2l7fqkEtuyf3XGOJjcpRFytxyGsb5Xou+haO7ZoKOeGF3p4Zd2suMw0YkmrkyASqisk+ombl3cVeX8PJvUdsCb0/WW2BTMbPs83aqOYJxc16sdepQjY8sD7HZ2jP0gANH4cDqaqD2YQMrdoYVMRIZeHbYMAyyZXy4u1T0A7klp0qQ7tNMdpbIbKZ4+FRTKPs83FkVi/RIiyRsC8afHBxfHR+ZgE0YgBuhhCQ65heXZHEUPQpqreBxK5Aj3mpAZj2WStvVg3dCz6d7IWh6aw1qSQ95l3Aq1I6QFfd+o5MZzF5Am7LwJWeOzLJy4QdO356hwv16drEN+7I6e7VSUXLhbL6z0YoQ9nbqORMXjYhs0ISrgM6JVuWEuBzfcWooVwEMx3bekJrfOgAA2c8GAtsEU7nJhQq5aXiuWJrXZOpwq9dly1sel68g7WztDH+Me++3z1oYGIkcBwAFVj/OjuXa1kUwrsV1UOT6vO40GV4DERtecEICrxnFIi6vGnxGXQ6iELUfSqPB/TJF52HR9n6XgcAKfjTlUOujF6uJLKoOKKWbJY0BY7ojIAb1DurU5OzJ2v2s2LUnInvo8/avYCgQ61figAUW+B8ESLe8Y+GZRVeyQjU5ArfhKJyyDdU06sz0w3ErHOmGDo8bAVFYeqmTpS2T3JHfTP7RquXriXHkBrdFbWScjvOIJUuNa8NBjWQwIEe6PiRg=
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: headplane
+  namespace: headscale
+spec:
+  selector:
+    matchLabels:
+      app: headplane
+  template:
+    metadata:
+      labels:
+        app: headplane
+    spec:
+      containers:
+        - name: headplane
+          image: ghcr.io/tale/headplane:latest
+          env:
+            - name: HEADSCALE_URL
+              value: "https://hail.hackos.dev"
+            - name: COOKIE_SECRET
+              valueFrom:
+                  secretKeyRef:
+                    name: headplane-secret
+                    key: COOKIE_SECRET
+            - name: DISABLE_API_KEY_LOGIN
+              value: "true"
+            - name: HOST
+              value: "0.0.0.0"
+            - name: PORT
+              value: "3000"
+            - name: ROOT_API_KEY
+              valueFrom:
+                  secretKeyRef:
+                    name: headplane-secret
+                    key: ROOT_API_KEY
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: headplane
+  namespace: headscale
+spec:
+  selector:
+    app: headplane
+  ports:
+    - protocol: TCP
+      port: 3000
+      targetPort: 3000 

@@ -17,6 +17,13 @@ spec:
                 name: headscale
                 port:
                   number: 8080
+          - path: /admin
+            pathType: Prefix
+            backend:
+              service:
+                name: headplane
+                port:
+                  number: 3000
   tls:
     - hosts:
         - hail.hackos.dev
