@@ -1,0 +1,25 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: cert-manager
+  namespace: argocd
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+spec:
+  syncPolicy:
+    automated: {}
+  destination:
+    namespace: cert-manager
+    server: {{ .Values.spec.destination.server }}
+  project: default
+  sources:
+  - repoURL: https://charts.jetstack.io
+    chart: cert-manager
+    targetRevision: 1.15.0  
+    helm:
+      parameters:
+      - name: "crds.enabled"
+        value: "true"
+  - repoURL: 'https://github.com/HackedOS/kube'
+    path: cert-manager
+    targetRevision: main
