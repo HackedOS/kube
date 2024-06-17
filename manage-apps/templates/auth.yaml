@@ -1,0 +1,19 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: auth
+  namespace: argocd
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+spec:
+  syncPolicy:
+    automated: 
+      prune: true
+  destination:
+    namespace: auth
+    server: {{ .Values.spec.destination.server }}
+  project: default
+  sources:
+  - repoURL: 'https://github.com/HackedOS/kube'
+    path: auth
+    targetRevision: main

@@ -1,0 +1,100 @@
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
+  name: lldap-credentials
+  namespace: auth
+spec:
+  encryptedData:
+    lldap-jwt-secret: AgBpa6xCEiGv0aw1ba9ALtfyesefuZ8DzYGg9sDPy/iXiyxvKxuVm9+tShI9e49aKiSDPtxlXLBDcvcH3JqQBdXghGxIkc9uzFIkbv458ji2VyF3/Nk4t3kF8Z5DiyiO7fH0EKy5jbu7fwuL3HAfqvnmMBMnKR/LUW/haE3bPjIAN4ZnA59fa1a+qNDrJukr2XjXUWhQy3dv/003t6LlOUo12pibpzk6iPBaFcEK25mPwJu/obmKnY3sGYkUrf6c3vbdal/neuqxbpZQPsYj2SkDwTM01jlnC9ImcQj//CbklbmUABbBqnOwgvkcMroVO/dLXPcMdPnRJ5CVEanPAu1hqoscvNQ8F006LN51Jwr80T2QflLucYjdG2LNeA5j9Io27g7sp/We6zjN5jWnllUvCY5/d0oQGQHUmlrCgMyMBcgXsjAWmiiKwWR1uLqTpk2edlAwHcNOzBJeK7D+e0grQU5tPrOwi0HJZT36Me+2r0nWIkfYpKoj7xCm1rdDghgsgTn4XXNEFrzfbvBVft1bNs6qEYiJZmfvsFDuJdW6MO7jXV1CwWJ0V0rbIkA/JWDaLrAzbgYaX1DbVHbL7qR+MwZ9yv2lHFlYUCH0z3lygPcA+EGFNYV8bEdJ1vRelDRzPQOPhXWenZHC5NFS40X+Gp0ZRSJ2rq3mt+ba7pYs4vVvUiwL4iczIvTxvp+dlGLwniwQL4j9iEpaCAk9DiRM4u9lcLKFZzkV9x1QOuHyrg==
+    lldap-key-seed: AgBrIP05jVxzbqk0b43uCRF790S8SFNRKvdP9oj7dDWguhqg4Jn9e8ZNCYh7WZkQjVz92S4t84Ob467jq7SHeFbAY+uQ3IFLKBVXlzn410+wC5e+7lki1G0IE2KopuWOfl+701opyKLMeYrIvegf6MiqMKQU6TEyP5RFeXDFQP36HNc5F0LVqu+VqBGAb/6jJ/gtwLIVfCWRP5fR72LDASWbkp8o56O2BvBfKMjXq/LgNbZ1QpknqDhGdbWqH4ZGhEzsfpjJlE66q9oVEGlAL8QKZ7vXK+XH82daAUKR3HjQPFsEjM6jB00cx+LMfBQZbHDwEC3XnP5QHGPU1QThy5Ks6yoWjLRy+nWbdHdoRyr+nLXXLpJAONrsrbAhkGd0UZVUHfvhPR+jaZ6LBppDQ6Kb6MxRQgI0bS2K1QdAF7rJIc0uJ0ToWSPlNocToOejqghiqfTaEeo3lf0QXchE5TGmr7/wikY7BAf38vujKaq6o3P9hQa0cq0MteWxZn2F57Whd951VT0nGdfx01Me/QuIUYmWLpT94TmpePexWQprSUNewaTuVkFekLrYFD11LQ64PLiGz/FVYXGwpWuUoRRGkRZkF6AYnayO1E9Jill8NwaPwi6qOk2POuaKSfkb2Ix92oulIq2VBpm/SNUZ9RTu594/jcayLPZt9Dw6DbVtpGWwvM0g0QYm54lD6CRkKWya9Macr6mrlwu3bY1UDEUB+KFWs1VeWzKnInn20ZI1sQ==
+    lldap-ldap-user-pass: AgAVs49AIAHbsDNg8xmsdHRjP2rqLFlBlfvIWuH3OyyZr6lN9Io5jRomh0uE1t6oVLfJAlyBDCtG3b8mtTcnUG0UMeoRCcf7TXMCtTG0xfTvrBcVxKiJz8BdCn/AGLUjJKwIQvTQ+TSVxQrD/ZyOFcMnOhjvYu9V3Lc9zj+xzH4Ed/dx/NUMcneD/jAbLgCOJ/vI0pAzneBKe8TuJFhgpcth6u5oPjtsJ+KG/10iRwwyioswjxslETMXGEtn2dYhzZSsH2Y2GHUSIBbMxrWdDzQq4jC8QXXEHRMl9Ff38duhmmgTtTC5648XV8qsxkFgbwS265pZhDa+CwtFT/huvvsQp5eM8vMyQ4wSBC9VebRx+uJX/Fi3NpGe+bIy6sKzEHTe4fSEvKFXEepo7OfPECw2vagaBArLMd3jZUiyrp+g2pleoSzSVn8tyaqi1OWohhJAl9uhNUZ4iDLdc/5vtSGbfEBOqatax2yIklb/IqmGPqVUYx9mGbl0unwhvGAD7oxShuNIbLH3kBzNwZsWE0xC9uDMEAYik6wZ6p0MOTXeizPQsL4So9/VvZXpMclg5iaTbIZhOsXfRzGxRU6+QuXeVw/ktFiRw2+7BZU1ZJaVVFkp0eodeEDpzgG/02wV+Af2STfE13/XTegu18XxB1tz7/r1VuNWIy9i43amvw0mItmLMPek6qQjlHX7lGy5KsghnVCsZx3WKn0=
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  labels:
+    app: lldap
+  name: lldap-data
+  namespace: auth
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 100Mi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: lldap
+  name: lldap
+  namespace: auth
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: lldap
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: lldap
+    spec:
+      containers:
+        - env:
+            - name: GID
+              value: "1001"
+            - name: LLDAP_JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: lldap-credentials
+                  key: lldap-jwt-secret
+            - name: LLDAP_LDAP_BASE_DN
+              value: dc=hackos,dc=dev
+            - name: LLDAP_LDAP_USER_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: lldap-credentials
+                  key: lldap-ldap-user-pass
+            - name: LLDAP_KEY_SEED
+              valueFrom:
+                secretKeyRef:
+                  name: lldap-credentials
+                  key: lldap-key-seed
+            - name: TZ
+              value: Asia/Kolkata
+            - name: UID
+              value: "1001"
+          image: nitnelave/lldap:latest
+          name: lldap
+          ports:
+            - containerPort: 3890
+            - containerPort: 17170
+          volumeMounts:
+            - mountPath: /data
+              name: lldap-data
+      restartPolicy: Always
+      volumes:
+        - name: lldap-data
+          persistentVolumeClaim:
+            claimName: lldap-data
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: lldap-service
+  name: lldap-service
+  namespace: auth
+spec:
+  ports:
+    - name: "3890"
+      port: 3890
+      targetPort: 3890
+    - name: "17170"
+      port: 17170
+      targetPort: 17170
+  selector:
+    app: lldap
