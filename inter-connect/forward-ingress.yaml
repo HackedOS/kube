@@ -1,0 +1,51 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+      cert-manager.io/cluster-issuer: letsencrypt
+  name: git-ingress
+  namespace: inter-connect
+spec:
+  rules:
+    - host: git.hackos.dev
+      http:
+        paths:
+          - backend:
+              service:
+                name: homelab
+                port:
+                  number: 80
+            path: /
+            pathType: Prefix
+  tls:
+    - hosts:
+        - git.hackos.dev
+      secretName: git-hackos-dev-tls
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: homelab
+  namespace: inter-connect
+spec:
+  ports:
+    -
+      name: homelab
+      protocol: TCP
+      port: 80
+      targetPort: 80
+---
+kind: Endpoints
+apiVersion: v1
+metadata:
+  name: homelab
+  namespace: inter-connect
+subsets:
+  -
+    addresses:
+      -
+        ip: 100.64.0.4
+    ports:
+      -
+        port: 80
+        name: homelab
