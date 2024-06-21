@@ -1,0 +1,29 @@
+secret:
+    existingSecret: authelia
+configMap:
+  session:
+    redis.enabled: false
+    cookies:
+      - domain: hackos.dev
+        subdomain: auth
+  storage:
+    postgres.enabled: false
+    local:
+      enabled: true
+  notifier:
+    smtp:
+      enabled: false
+    filesystem:
+      enabled: true
+  authentication_backend:
+    ldap:
+      enabled: true
+      implementation: lldap
+      address: ldap://lldap-service.auth.svc.cluster.local:3890
+      base_dn: dc=hackos,dc=dev
+      additional_users_dn:
+      additional_groups_dn:
+      user: uid=authelia,ou=people,dc=hackos,dc=dev
+
+persistence:
+  enabled: true

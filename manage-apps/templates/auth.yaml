@@ -17,3 +17,14 @@ spec:
   - repoURL: 'https://github.com/HackedOS/kube'
     path: auth
     targetRevision: main
+    directory:
+      exclude: "authelia.yaml"
+  - repoURL: 'https://charts.authelia.com'
+    chart: authelia
+    targetRevision: 0.9.0-beta5
+    helm:
+      valueFiles:
+      - $values/auth/authelia.yaml
+  - repoURL: 'https://github.com/HackedOS/kube'
+    targetRevision: main
+    ref: values
