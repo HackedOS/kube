@@ -22,6 +22,30 @@ spec:
         - git.hackos.dev
       secretName: git-hackos-dev-tls
 ---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+      cert-manager.io/cluster-issuer: letsencrypt
+  name: bin-ingress
+  namespace: inter-connect
+spec:
+  rules:
+    - host: bin.hackos.dev
+      http:
+        paths:
+          - backend:
+              service:
+                name: homelab
+                port:
+                  number: 80
+            path: /
+            pathType: Prefix
+  tls:
+    - hosts:
+        - bin.hackos.dev
+      secretName: bin-hackos-dev-tls
+---
 kind: Service
 apiVersion: v1
 metadata:
