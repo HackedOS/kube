@@ -1,0 +1,19 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: arkadocs
+  namespace: argocd
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+spec:
+  syncPolicy:
+    automated: 
+      prune: true
+  destination:
+    namespace: arkadocs
+    server: {{ .Values.spec.destination.server }}
+  project: default
+  sources:
+  - repoURL: 'https://github.com/HackedOS/kube'
+    path: arkadocs
+    targetRevision: main

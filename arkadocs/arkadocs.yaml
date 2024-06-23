@@ -1,0 +1,80 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: arkadocs-data
+  namespace: arkadocs
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 100Mi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: arkadocs
+  namespace: arkadocs
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: arkadocs
+  template:
+    metadata:
+      labels:
+        app: arkadocs
+    spec:
+      restartPolicy: Always
+      containers:
+        - name: arkadocs
+          image: git.hackos.dev/arkadocs/arkadocs:latest
+          env:
+            - name: DATABASE_URL
+              value: "sqlite:////db/db.sqlite3"
+            - name: DJANGO_ALLOWED_HOSTS
+              value: docs.sreearkagreentech.com
+            - name: DJANGO_CSRF_TRUSTED_ORIGINS
+              value: 'https://docs.sreearkagreentech.com'
+            - name: DJANGO_SECRET_KEY
+              value: '-vnfelkm8wt^y9_ebqb5)*j!q+f(3ct(*@27%&=i(yb1arvz3x'
+          volumeMounts:
+            - name: arkadocs-data
+              mountPath: /db
+      volumes:
+        - name: arkadocs-data
+          persistentVolumeClaim:
+            claimName: arkadocs-data
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: arkadocs
+  namespace: arkadocs
+spec:
+  selector:
+    app: arkadocs
+  ports:
+    - protocol: TCP
+      port: 8000
+      targetPort: 8000
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+      cert-manager.io/cluster-issuer: letsencrypt
+  name: arkadocs-ingress
+  namespace: arkadocs
+spec:
+  rules:
+    - host: docs.sreearkagreentech.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: arkadocs
+                port:
+                  number: 8000

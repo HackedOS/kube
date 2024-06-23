@@ -46,6 +46,30 @@ spec:
         - bin.hackos.dev
       secretName: bin-hackos-dev-tls
 ---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+      cert-manager.io/cluster-issuer: letsencrypt
+  name: arkadocs-ingress
+  namespace: inter-connect
+spec:
+  rules:
+    - host: docs.sreearkagreentech.com
+      http:
+        paths:
+          - backend:
+              service:
+                name: homelab
+                port:
+                  number: 80
+            path: /
+            pathType: Prefix
+  tls:
+    - hosts:
+        - docs.sreearkagreentech.com
+      secretName: docs-sreearkagreentech-com-tls
+---
 kind: Service
 apiVersion: v1
 metadata:
