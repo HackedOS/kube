@@ -1,3 +1,31 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: homelab
+  namespace: inter-connect
+spec:
+  ports:
+    -
+      name: homelab
+      protocol: TCP
+      port: 80
+      targetPort: 80
+---
+kind: Endpoints
+apiVersion: v1
+metadata:
+  name: homelab
+  namespace: inter-connect
+subsets:
+  -
+    addresses:
+      -
+        ip: 100.64.0.4
+    ports:
+      -
+        port: 80
+        name: homelab
+---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -69,31 +97,3 @@ spec:
     - hosts:
         - docs.sreearkagreentech.com
       secretName: docs-sreearkagreentech-com-tls
----
-kind: Service
-apiVersion: v1
-metadata:
-  name: homelab
-  namespace: inter-connect
-spec:
-  ports:
-    -
-      name: homelab
-      protocol: TCP
-      port: 80
-      targetPort: 80
----
-kind: Endpoints
-apiVersion: v1
-metadata:
-  name: homelab
-  namespace: inter-connect
-subsets:
-  -
-    addresses:
-      -
-        ip: 100.64.0.4
-    ports:
-      -
-        port: 80
-        name: homelab

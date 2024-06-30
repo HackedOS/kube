@@ -1,0 +1,135 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: big-crummer
+  namespace: inter-connect
+spec:
+  ports:
+    -
+      name: big-crummer
+      protocol: TCP
+      port: 80
+      targetPort: 80
+    -
+      name: big-crummer-8080
+      protocol: TCP
+      port: 8080
+      targetPort: 8080
+---
+kind: Endpoints
+apiVersion: v1
+metadata:
+  name: big-crummer
+  namespace: inter-connect
+subsets:
+  -
+    addresses:
+      -
+        ip: 100.64.0.7
+    ports:
+      -
+        port: 80
+        name: big-crummer
+      - 
+        port: 8080
+        name: big-crummer-8080
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+      cert-manager.io/cluster-issuer: letsencrypt
+  name: ptero-ingress
+  namespace: inter-connect
+spec:
+  rules:
+    - host: panel.hackos.dev
+      http:
+        paths:
+          - backend:
+              service:
+                name: big-crummer
+                port:
+                  number: 80
+            path: /
+            pathType: Prefix
+  tls:
+    - hosts:
+        - panel.hackos.dev
+      secretName: panel-hackos-dev-tls
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+      cert-manager.io/cluster-issuer: letsencrypt
+  name: ptero-big-ingress
+  namespace: inter-connect
+spec:
+  rules:
+    - host: wings-big.hackos.dev
+      http:
+        paths:
+          - backend:
+              service:
+                name: big-crummer
+                port:
+                  number: 8080
+            path: /
+            pathType: Prefix
+  tls:
+    - hosts:
+        - wings-big.hackos.dev
+      secretName: wings-big-hackos-dev-tls
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: smol-crummer
+  namespace: inter-connect
+spec:
+  ports:
+    -
+      name: smol-crummer
+      protocol: TCP
+      port: 8080
+      targetPort: 8080
+---
+kind: Endpoints
+apiVersion: v1
+metadata:
+  name: smol-crummer
+  namespace: inter-connect
+subsets:
+  -
+    addresses:
+      -
+        ip: 100.64.0.6
+    ports:
+      -
+        port: 8080
+        name: smol-crummer
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+      cert-manager.io/cluster-issuer: letsencrypt
+  name: ptero-smol-ingress
+  namespace: inter-connect
+spec:
+  rules:
+    - host: wings-smol.hackos.dev
+      http:
+        paths:
+          - backend:
+              service:
+                name: smol-crummer
+                port:
+                  number: 8080
+            path: /
+            pathType: Prefix
+  tls:
+    - hosts:
+        - wings-smol.hackos.dev
+      secretName: wings-smol-hackos-dev-tls
