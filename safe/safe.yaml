@@ -1,0 +1,193 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: database
+  namespace: safe
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: uploads
+  namespace: safe
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 250Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: logs
+  namespace: safe
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: chibisafe
+  namespace: safe
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: chibisafe
+  template:
+    metadata:
+      labels:
+        app: chibisafe
+    spec:
+      containers:
+      - name: chibisafe
+        image: chibisafe/chibisafe:latest
+        env:
+        - name: BASE_API_URL
+          value: "http://chibisafe-server:8000"
+        ports:
+        - containerPort: 8001
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: chibisafe
+  namespace: safe
+spec:
+  selector:
+    app: chibisafe
+  ports:
+  - protocol: TCP
+    port: 8001
+    targetPort: 8001
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: chibisafe-server
+  namespace: safe
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: chibisafe-server
+  template:
+    metadata:
+      labels:
+        app: chibisafe-server
+    spec:
+      containers:
+      - name: chibisafe-server
+        image: chibisafe/chibisafe-server:latest
+        env:
+        - name: ADMIN_PASSWORD
+          value: "admin"
+        volumeMounts:
+        - name: database
+          mountPath: /app/database
+        - name: uploads
+          mountPath: /app/uploads
+        - name: logs
+          mountPath: /app/logs
+        ports:
+        - containerPort: 8000
+      volumes:
+      - name: database
+        persistentVolumeClaim:
+          claimName: database
+      - name: uploads
+        persistentVolumeClaim:
+          claimName: uploads
+      - name: logs
+        persistentVolumeClaim:
+          claimName: logs
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: chibisafe-server
+  namespace: safe
+spec:
+  selector:
+    app: chibisafe-server
+  ports:
+  - protocol: TCP
+    port: 8000
+    targetPort: 8000
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: caddy
+  namespace: safe
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: caddy
+  template:
+    metadata:
+      labels:
+        app: caddy
+    spec:
+      containers:
+      - name: caddy
+        image: caddy:2-alpine
+        env:
+        - name: BASE_URL
+          value: ":80"
+        volumeMounts:
+        - name: caddy-config
+          mountPath: /etc/caddy
+        - name: uploads
+          mountPath: /app/uploads
+        ports:
+        - containerPort: 80
+      volumes:
+      - name: caddy-config
+        configMap:
+          name: caddy-config
+      - name: uploads
+        persistentVolumeClaim:
+          claimName: uploads
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: caddy
+  namespace: safe
+spec:
+  selector:
+    app: caddy
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: safe-ingress
+  namespace: safe
+spec:
+  rules:
+  - host: safe.hackos.dev
+    http:
+      paths:
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: caddy
+              port:
+                number: 80
