@@ -34,3 +34,16 @@ subjects:
 - kind: ServiceAccount
   name: default
   namespace: headscale
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: headplane
+  namespace: headscale
+spec:
+  selector:
+    app: headscale
+  ports:
+    - protocol: TCP
+      port: 3000
+      targetPort: 3000
