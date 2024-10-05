@@ -17,7 +17,6 @@ data:
       type: sqlite
       sqlite:
         path: /var/lib/headscale/db.sqlite
-    acl_policy_path: "/etc/headscale/acl.json"
     dns_config:
       override_local_dns: true
       nameservers:
@@ -27,16 +26,3 @@ data:
     derp:
       urls:
         - https://controlplane.tailscale.com/derpmap/default
-
-  acl.json: |
-    {
-      "acls": [
-        { "action": "accept", "src": ["*"], "dst": ["*:*"] },
-      ],
-      "autoApprovers": {
-        "routes": {
-            "10.42.0.0/16": ["k3s"],
-            "2001:cafe:42::/56": ["k3s"],
-        },
-      }
-    }

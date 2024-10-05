@@ -60,7 +60,7 @@ spec:
 
       - name: headscale
         image: headscale/headscale:0.23.0
-        command: ['serve']
+        command: ["headscale","serve"]
         volumeMounts:
         - name: headscale-data
           mountPath: /var/lib/headscale
