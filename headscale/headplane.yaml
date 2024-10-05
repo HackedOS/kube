@@ -8,53 +8,29 @@ spec:
     COOKIE_SECRET: AgA83Mppn4Zmql/mI5kUZEnZgV+Odgo7UGnSSGEfoowmXwsCZ9FQbehgwkIzsWrquEOdzq/+wl4poz3j8zxyQ/E+lBjRkGhEHZ5nIo+BVWyvu2kQqfdIoCg3LM6kQ1A5/4M6NX7TiqO2v+fS1voRW0F1aCUPEhBKIR1Iv2f16Anhghun7JlBu8Fl46dEZFu9qZbDh8F/W2NdASSVOd1ZfjUf21sLGkm6K7NEVhpXLMTDYoXQlS3D/iHiNjuF92Ur/rMX+Jtgk/6Nv/X/lsDmxp0I8Np239u1LF8uU4w3202zLug1gDSxgu7Z7KBSS6vlNs8H4q0yDQ90+gmJ1CFjjO2W0SU9BWbspARWAwiibuV7Qgq7CD7TI2fANU9zsUxIS1DE+RSyMUhxtey+B95td3ZT3aJEx3O7Iyk6kT5NV2xDhYRpmxqdITzw+O8IgCsFHbo/6xaNWHuZbsD5ClEZzzCXl4Z+kwU+It8XYuORsiO9GZeGmR6kWewl8ZFdl1FRrHxSfCuB9yVxLM96vS0HDEmxys6Jx0TfHxHMP3HUB5mR3I1SkMBm2TjFxqrcrGkG3kDYu6z5tIRrXNHtRhmCEwT7+AXIT0SKv27XB2/AXz/X0oCzIiZWN6cuw9dkSuLjREl5Y300SvK5u4BNw6yUxx7m1RfQATIVeQaVhR235UsTeYpxN43exrltIhZsf/oyLsdPKQUluXdsLe6FUpIZOCEsDzLZeB9LJT97mw==
     ROOT_API_KEY: AgAlpmKi8EecnZTjA/bFKQHnrVbnUXRUr/q9Kn1SyXN6+NACh55gm4dSwmzFps6JO4h3w7tM9m7UfLj3H7RCsyUC2oeRJ32MylA4MCY5oZaCeByAT7SoRmPwM/NPUX5xG9jrnwjfk+YbrlAddnXD+ElWzUjxN+6W2jvlniO8NA8JCyoIJClXW9j2NzlfeXWJfbMXbiqt8iSHNsgI0tffbo5D/2NfcLjjEXCOKZ1q2bSpMUNxEUQg4I0BGQnqeKFhKMubhR32Y74L5pm3ja50MNwDO2PBx20BsWd+5/ISWO6BQFH1NmXFvKMde4OI/PLQ2Ygbq/4BjNdVhsU9HnpAEBP2Rjjl6jFGxxqoqWCGPMlY1UF2NaDIZRespH6OgA2/y4P0qoc2WxWlyjMcLV6XsdZxmgAeSCwS73REv9txkpMyyVPrDdWvTqYg6iUo/KSibY7d7YvUo4WzN1MnORE7c9Dcfm+Cnrs3dSZf0uQGfgDRYI6B+m7kOz8LhZPLKDRe+KnQpq/f2sf3SFS0t2vlO4aS9tmJF7F7z1/bTiDHXxLz4xj7aS5Pip0ClBEHMT8xa+TN3IHVmgOXyJ/faOnl/Rtr0k/jHNqD2P73JqTkn2MiDuIH+ouvcHtIexDunULc+jVeh0lQzxcigmxnzmccQGpO3wVJe3reu2ib9zG7fjn7pfT/ZqcrHglCJgA+n2evYyP4VU+K+XjiT0dgAWsd8GfdqoO9FWOdjwKPcOgr+pLryumD3cP5lC3nO/c9tJwv4ZEx0P2YWYQ=
 ---
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
 metadata:
-  name: headplane
+  name: headplane-agent
   namespace: headscale
-spec:
-  selector:
-    matchLabels:
-      app: headplane
-  template:
-    metadata:
-      labels:
-        app: headplane
-    spec:
-      containers:
-        - name: headplane
-          image: ghcr.io/tale/headplane:latest
-          env:
-            - name: HEADSCALE_URL
-              value: "https://hail.hackos.dev"
-            - name: COOKIE_SECRET
-              valueFrom:
-                  secretKeyRef:
-                    name: headplane-secret
-                    key: COOKIE_SECRET
-            - name: DISABLE_API_KEY_LOGIN
-              value: "true"
-            - name: HOST
-              value: "0.0.0.0"
-            - name: PORT
-              value: "3000"
-            - name: ROOT_API_KEY
-              valueFrom:
-                  secretKeyRef:
-                    name: headplane-secret
-                    key: ROOT_API_KEY
-
+rules:
+- apiGroups: ['']
+  resources: ['pods']
+  verbs: ['get', 'list']
+- apiGroups: ['apps']
+  resources: ['deployments']
+  verbs: ['get', 'list']
 ---
-apiVersion: v1
-kind: Service
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
 metadata:
-  name: headplane
+  name: headplane-agent
   namespace: headscale
-spec:
-  selector:
-    app: headplane
-  ports:
-    - protocol: TCP
-      port: 3000
-      targetPort: 3000 
+roleRef:
+    apiGroup: rbac.authorization.k8s.io
+    kind: Role
+    name: headplane-agent
+subjects:
+- kind: ServiceAccount
+  name: default
+  namespace: headscale

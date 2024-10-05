@@ -15,6 +15,8 @@ kind: Deployment
 metadata:
   name: headscale
   namespace: headscale
+  labels:
+    app: headscale
 spec:
   replicas: 1
   selector:
@@ -25,16 +27,46 @@ spec:
       labels:
         app: headscale
     spec:
-      restartPolicy: Always
+      shareProcessNamespace: true
+      serviceAccountName: default
       containers:
-        - name: headscale
-          image: headscale/headscale:0.23.0-alpha12
-          command: ["headscale", "serve"]
-          volumeMounts:
-            - name: headscale-data
-              mountPath: /var/lib/headscale/
-            - name: headscale-config
-              mountPath: /etc/headscale/
+      - name: headplane
+        image: ghcr.io/tale/headplane:0.3.1
+        env:
+        - name: HEADSCALE_URL
+          value: "https://hail.hackos.dev"
+        - name: COOKIE_SECRET
+          valueFrom:
+              secretKeyRef:
+                name: headplane-secret
+                key: COOKIE_SECRET
+        - name: ROOT_API_KEY
+          valueFrom:
+              secretKeyRef:
+                name: headplane-secret
+                key: ROOT_API_KEY
+        - name: DISABLE_API_KEY_LOGIN
+          value: "true"
+        - name: HEADSCALE_INTEGRATION
+          value: 'kubernetes'
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+
+        volumeMounts:
+        - name: headscale-config
+          mountPath: /etc/headscale
+
+      - name: headscale
+        image: headscale/headscale:0.23.0
+        command: ['serve']
+        volumeMounts:
+        - name: headscale-data
+          mountPath: /var/lib/headscale
+        - name: headscale-config
+          mountPath: /etc/headscale
+
       volumes:
         - name: headscale-data
           persistentVolumeClaim:
@@ -55,3 +87,6 @@ spec:
     - protocol: TCP
       port: 8080
       targetPort: 8080
+    - protocol: TCP
+      port: 3000
+      targetPort: 3000
