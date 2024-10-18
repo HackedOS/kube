@@ -16,15 +16,10 @@ spec:
   sources:
   - repoURL: code.forgejo.org/forgejo-helm
     chart: forgejo
-    targetRevision: 7.0.1
+    targetRevision: 10.0.0
     helm:
       valueFiles:
       - $values/forgejo/values.yaml
   - repoURL: 'https://github.com/HackedOS/kube'
     targetRevision: main
     ref: values
-  - repoURL: 'https://github.com/HackedOS/kube'
-    path: forgejo
-    targetRevision: main
-    directory:
-      exclude: "values.yaml"
