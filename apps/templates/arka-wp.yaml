@@ -17,3 +17,6 @@ spec:
     helm:
       valueFiles:
       - $values/arka-wp/values.yaml
+  - repoURL: 'https://github.com/HackedOS/kube'
+    targetRevision: main
+    ref: values
