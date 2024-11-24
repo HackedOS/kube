@@ -1,0 +1,7 @@
+ingress:
+  enabled: true
+  hostname: sreearkagreentech.com
+
+wordpressUsername: hackos
+wordpressEmail: "hackos@hackos.dev"
+wordpressBlogName: "Sree Arka Green Tech"

@@ -1,0 +1,19 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: arka-wp
+  namespace: argocd
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+spec:
+  destination:
+    namespace: arka-wp
+    server: {{ .Values.spec.destination.server }}
+  project: default
+  sources:
+  - repoURL: charts.bitnami.com/bitnami
+    chart: wordpress
+    targetRevision: 24.0.7
+    helm:
+      valueFiles:
+      - $values/arka-wp/values.yaml

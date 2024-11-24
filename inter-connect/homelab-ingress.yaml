@@ -103,6 +103,30 @@ kind: Ingress
 metadata:
   annotations:
       cert-manager.io/cluster-issuer: letsencrypt
+  name: arka-wp-ingress
+  namespace: inter-connect
+spec:
+  rules:
+    - host: sreearkagreentech.com
+      http:
+        paths:
+          - backend:
+              service:
+                name: homelab
+                port:
+                  number: 80
+            path: /
+            pathType: Prefix
+  tls:
+    - hosts:
+        - sreearkagreentech.com
+      secretName: sreearkagreentech-com-tls
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+      cert-manager.io/cluster-issuer: letsencrypt
   name: safe-ingress
   namespace: inter-connect
 spec:
