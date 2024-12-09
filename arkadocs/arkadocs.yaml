@@ -16,7 +16,7 @@ spec:
       restartPolicy: Always
       containers:
         - name: arkadocs
-          image: git.hackos.dev/sreearka/arkadocs:0.1.2
+          image: git.hackos.dev/sreearka/arkadocs:0.1.3
           env:
             - name: DB_URL
               value: "postgres://arkadocs:arkadocs123@postgres-service:5432/arkadocs?sslmode=disable"
